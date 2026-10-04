@@ -1,6 +1,8 @@
 import typing as t
 import unicodedata
 
+from tlds import tld_set
+
 from atproto_client import models
 from atproto_client.utils.facet_regexes import (
     CASHTAG_REGEX,
@@ -9,7 +11,6 @@ from atproto_client.utils.facet_regexes import (
     TRAILING_PUNCTUATION_REGEX,
     URL_REGEX,
 )
-from atproto_client.utils.tlds import TLDS
 
 # Ported from `detectFacets` of the TypeScript SDK (@atproto/api):
 # https://github.com/bluesky-social/atproto/blob/main/packages/api/src/rich-text/detection.ts
@@ -83,7 +84,7 @@ def _create_facet(text: str, start: int, end: int, feature: _FacetFeature) -> mo
 def _is_valid_domain(domain: str) -> bool:
     """Check that the domain ends with a known TLD (case-sensitive, like in the TypeScript SDK)."""
     _, dot, tld = domain.rpartition('.')
-    return bool(dot) and tld in TLDS
+    return bool(dot) and tld in tld_set
 
 
 def _detect_links(text: str) -> t.List[models.AppBskyRichtextFacet.Main]:
